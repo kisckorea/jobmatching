@@ -7,22 +7,19 @@ import java.util.*;
 
 public class MatchingTable {
 
-	static String joblist[][] = new String[889][10];
+	String joblist[][] = new String[889][10];
 
-	public static void main(String args[]){
-		
-		test();
-		
+	public static void main(String args[]) {
+
+		MatchingTable mt = new MatchingTable();
+
+		mt.init();
+		mt.test();
+
 	}
-	
-	static void  test() {
 
-		// size(100, 100);
-		// smooth();
+	private void init() {
 		int cnt = 0;
-
-		// Read the job data from database//
-
 		try {
 			BufferedReader reader = new BufferedReader(
 					new FileReader(
@@ -43,6 +40,18 @@ public class MatchingTable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+
+
+	}
+
+	void test() {
+
+		// size(100, 100);
+		// smooth();
+		
+
+		// Read the job data from database//
 
 		System.out
 				.println(" SMART CITY  ---Job Type Matching Program Prototype:");
