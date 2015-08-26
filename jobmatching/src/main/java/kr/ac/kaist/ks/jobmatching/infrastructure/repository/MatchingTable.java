@@ -1,23 +1,32 @@
 package kr.ac.kaist.ks.jobmatching.infrastructure.repository;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
 public class MatchingTable {
 
-	String joblist[][] = new String[889][10];
+	static String joblist[][] = new String[889][10];
 
-	void setup() {
+	public static void main(String args[]){
+		
+		test();
+		
+	}
+	
+	static void  test() {
 
-		size(100, 100);
+		// size(100, 100);
 		// smooth();
 		int cnt = 0;
 
 		// Read the job data from database//
 
 		try {
-			BufferedReader reader = new BufferedReader("C:\\Users\\ZHAO DAPENG\\Desktop\\Matching table V2.5_eng_processing_test_v5.0.csv");
+			BufferedReader reader = new BufferedReader(
+					new FileReader(
+							"resource\\Matching table V2.5_eng_processing_test_v5.0.csv"));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				// print(line);

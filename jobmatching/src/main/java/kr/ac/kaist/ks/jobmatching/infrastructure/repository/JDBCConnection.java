@@ -19,7 +19,7 @@ public abstract class JDBCConnection {
 				}
 				
 				try {
-					connection = DriverManager.getConnection("jdbc:mysql://localhost", "root", "0000");
+					connection = DriverManager.getConnection("jdbc:mysql://143.248.90.131", "root", "0000");
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
