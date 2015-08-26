@@ -14,7 +14,12 @@ public class MatchingTable {
 		MatchingTable mt = new MatchingTable();
 
 		mt.init();
-		mt.test();
+		
+		
+		int testID = 100;
+		int threshold = 35;
+		
+		mt.test(testID, threshold);
 
 	}
 
@@ -45,7 +50,7 @@ public class MatchingTable {
 
 	}
 
-	void test() {
+	void test(int testID, int threshold) {
 
 		// size(100, 100);
 		// smooth();
@@ -71,8 +76,7 @@ public class MatchingTable {
 
 		/* Read Searching ID from the Keyboard */
 
-		int testID = 100;
-		int threshold = 35;
+		
 
 		String targetJobPosition = joblist[testID][6];
 		String searchJob = joblist[testID][8];
