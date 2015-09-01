@@ -7,28 +7,35 @@ import java.util.*;
 
 public class MatchingTable {
 
-	String joblist[][] = new String[889][10];
+	String[][] joblist;
 
 	public static void main(String args[]) {
 
 		MatchingTable mt = new MatchingTable();
 
-		mt.init();
-		
-		
-		int testID = 100;
+		int testID = 122100;
 		int threshold = 35;
-		
-		mt.test(testID, threshold);
+
+		ArrayList<String> result = mt.getSimilarJob(testID + "", threshold);
+
+		for (String counter : result) {
+			System.out.println("    " + counter);
+		}
 
 	}
 
-	private void init() {
+	public MatchingTable() {
+		joblist = new String[889][10];
+		String fileName = "resource\\Matching table V2.5_eng_processing_test_v5.0.csv";
+		init(fileName);
+		//System.out.println("Matching table loaded: " + fileName);
+
+	}
+
+	private void init(String fileName) {
 		int cnt = 0;
 		try {
-			BufferedReader reader = new BufferedReader(
-					new FileReader(
-							"resource\\Matching table V2.5_eng_processing_test_v5.0.csv"));
+			BufferedReader reader = new BufferedReader(new FileReader(fileName));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				// print(line);
@@ -46,25 +53,14 @@ public class MatchingTable {
 			e.printStackTrace();
 		}
 
-
-
 	}
 
-	void test(int testID, int threshold) {
+	public ArrayList<String> getSimilarJob(String testID_str, int threshold) {
 
 		// size(100, 100);
 		// smooth();
-		
 
 		// Read the job data from database//
-
-		System.out
-				.println(" SMART CITY  ---Job Type Matching Program Prototype:");
-		System.out.println();
-		System.out.println();
-
-		System.out
-				.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
 		// for (int i=0; i<889; i++) {
 		// for (int j=0; j<10; j++)
@@ -76,68 +72,46 @@ public class MatchingTable {
 
 		/* Read Searching ID from the Keyboard */
 
-		
+		int testID = Integer.parseInt(testID_str);
+
+		testID = getJobID(testID_str);
+		if(testID==0)
+			System.out.println("no job id in joblist");
+				
+				
 
 		String targetJobPosition = joblist[testID][6];
 		String searchJob = joblist[testID][8];
 		String searchJobID = joblist[testID][7];
 
-		// Print out the Title and relevance Information
+		System.out.print("JobID: " + searchJobID);
+		System.out.println("\tJobPosition: " + targetJobPosition);
 
-		System.out
-				.println("  Reference for Closeness Between Target Job and Other Jobs: (Subject to change)");
-		System.out
-				.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-		System.out.println();
-		System.out
-				.println("  0  = Distance   == 0 ------>   Perfectly_matched                  0 < Distance <= 5  ------> very Good_matched");
-		System.out
-				.println("  05 < Distance  <= 10 ------>   Good___matched                    10 < Distance <= 15 ------> Farely__matched  ");
-		System.out
-				.println("  15 < Distance  <= 20 ------>   SignificantMatch                  20 < Distance <= 25 ------> Ok__matched      ");
-		System.out
-				.println("  25 < Distance  <= 35 ------>   ConsiderableMatch                 35 < Distance <= 45 ------> YES and NO_match ");
-		System.out
-				.println("  45 < Distance  <= 55 ------>   Hard so Say_match                 55 < Distance <= 60 ------> Not_relavant_Jobs");
-		System.out
-				.println("  60 < Distance   > 70 ------>   Rejected_Job_List");
-		System.out.println();
-		System.out
-				.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-
-		System.out
-				.println("  NAME OF THE JOB Going TO BE MATCHED:                "
-						+ " [ "
-						+ searchJob
-						+ " ]"
-						+ "  "
-						+ "Target Job Position: "
-						+ "["
-						+ targetJobPosition
-						+ "]" + "  " + "TargetJob_ID: " + searchJobID);
-		System.out
-				.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-
-		System.out.println();
-		System.out
-				.println(" <Distance> --------------  <Senior_favored_weights>   [Name of related jobs Listed regarding their distance] -------------------------------------------------------------------------------");
-		System.out.println();
-
+		/*
+		 * Reference for Closeness Between Target Job and Other Jobs: (Subject
+		 * to change)");
+		 * --------------------------------------------------------
+		 * -------------------------------------------------------------- 0 =
+		 * Distance == 0 ------> Perfectly_matched 0 < Distance <= 5 ------>
+		 * very Good_matched 05 < Distance <= 10 ------> Good___matched 10 <
+		 * Distance <= 15 ------> Farely__matched 15 < Distance <= 20 ------>
+		 * SignificantMatch 20 < Distance <= 25 ------> Ok__matched 25 <
+		 * Distance <= 35 ------> ConsiderableMatch 35 < Distance <= 45 ------>
+		 * YES and NO_match 45 < Distance <= 55 ------> Hard so Say_match 55 <
+		 * Distance <= 60 ------> Not_relavant_Jobs 60 < Distance > 70 ------>
+		 * Rejected_Job_List");
+		 * --------------------------------------------------
+		 * --------------------------------------------------------------------
+		 * 
+		 * <Distance> -------------- <Senior_favored_weights> [Name of related
+		 * jobs Listed regarding their distance] System.out.println();
+		 */
 		int targetJobskillNeeded = Integer.valueOf(joblist[testID][0]);
 		String targetJobDomain = joblist[testID][1];
 		String targetJobField = joblist[testID][2];
 		String targetJobSkill_General = joblist[testID][3];
 		String targetJobSkill = joblist[testID][4];
 		String targetPosition_General = joblist[testID][5];
-
-		//
-		// System.out.println("-------------------------");
-		// System.out.println("targetJobskillNeeded="+ targetJobskillNeeded);
-		// System.out.println("targetJobDomain="+ targetJobDomain);
-		// System.out.println("targetJobField="+ targetJobField);
-		// System.out.println("targetJobSkill="+ targetJobSkill);
-		// System.out.println("targetJobPosition="+ targetJobPosition);
-		//
 
 		// Initialize the Total distance arraylist to store the distance value
 		// from the for loop//
@@ -233,20 +207,21 @@ public class MatchingTable {
 					+ distancePosition;
 			// System.out.println(jobID + " = " + totalDistanceBetweenTarget);
 
-			if (totalDistanceBetweenTarget <= 0) {
-				similarity = "Perfectly_matched ";
-			} else if (totalDistanceBetweenTarget <= 5) {
+			if (totalDistanceBetweenTarget == 0)
+				continue;
+
+			if (totalDistanceBetweenTarget <= 05) {
 				similarity = "Very Good_matched ";
 			} else if (totalDistanceBetweenTarget <= 10) {
 				similarity = "Good___matched   ";
 			} else if (totalDistanceBetweenTarget <= 15) {
-				similarity = "Farely__matched  ";
+				similarity = "Good___matched   ";
 			} else if (totalDistanceBetweenTarget <= 20) {
-				similarity = "SignificantMatch ";
+				similarity = "Farely_Match ";
 			} else if (totalDistanceBetweenTarget <= 25) {
-				similarity = "Ok__matched      ";
+				similarity = "Farely__matched      ";
 			} else if (totalDistanceBetweenTarget <= 35) {
-				similarity = "Considerable Match";
+				similarity = "Farely__matched       ";
 			} else if (totalDistanceBetweenTarget <= 40) {
 				similarity = "YES and NO_match ";
 			} else if (totalDistanceBetweenTarget <= 45) {
@@ -262,12 +237,13 @@ public class MatchingTable {
 			 * reading purpose
 			 */
 
+			HashMap<String, Integer> map = new HashMap<String, Integer>();
+			// map.put(key, value);
+
 			String jobID_DistanceBetweenTarget = new String();
-			jobID_DistanceBetweenTarget = totalDistanceBetweenTarget + "   "
-					+ "[ " + similarity + " ]" + "      " + " ("
-					+ senior_Favored_weight + " %" + ")" + ":" + "          "
-					+ jobTitileCode + "  " + jobID + "       " + "("
-					+ jobPosition + ")";
+			jobID_DistanceBetweenTarget = totalDistanceBetweenTarget + "\t"
+					+ similarity + "\t" + jobID + "\t" + jobTitileCode + "\t"
+					+ jobPosition;// + "\t" + senior_Favored_weight + "%";
 
 			// System.out.println(jobID_DistanceBetweenTarget);
 
@@ -288,9 +264,17 @@ public class MatchingTable {
 		Collections.sort(distanceArrayList);
 		// System.out.println(distanceArrayList);
 
-		for (String counter : distanceArrayList) {
-			System.out.println("    " + counter);
+		return distanceArrayList;
+	}
+
+	private int getJobID(String testID_str) {
+
+		for (int i = 0; i < joblist.length; i++) {
+			if (joblist[i][7].equals(testID_str))
+				return i;
 		}
+
+		return 0;
 	}
 
 }
