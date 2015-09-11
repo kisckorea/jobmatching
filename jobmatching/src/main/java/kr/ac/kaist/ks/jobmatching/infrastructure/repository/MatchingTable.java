@@ -7,7 +7,15 @@ import java.util.*;
 
 public class MatchingTable {
 
+	// temporal data structure for the csv file
 	String[][] joblist;
+
+	// Key: Job Values: 10 Matched Jobs
+	// This HashMap is for 889 all jobs in the file
+	private HashMap<String, ArrayList<String>> matchingTableMap;
+	
+	//worknet Job code and job name
+	private HashMap<String, String> jobTableMap;
 
 	public static void main(String args[]) {
 
@@ -22,17 +30,27 @@ public class MatchingTable {
 			System.out.println("    " + counter);
 		}
 
+	//	System.out.println(matchingTableMap);
 	}
 
 	public MatchingTable() {
 		joblist = new String[889][10];
+		matchingTableMap = new HashMap<String, ArrayList<String>>();
+		jobTableMap = new HashMap<String, String>();
+
 		String fileName = "resource\\Matching table V2.5_eng_processing_test_v5.0.csv";
 		init(fileName);
-		//System.out.println("Matching table loaded: " + fileName);
+		// System.out.println("Matching table loaded: " + fileName);
+
+		buildMatchingTable();
+
+
 
 	}
 
+	// read matching table files and construct a HashMap
 	private void init(String fileName) {
+
 		int cnt = 0;
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -55,6 +73,24 @@ public class MatchingTable {
 
 	}
 
+	// build a HashMap for all job (key: job, value: list of matched jobs)
+	public void buildMatchingTable() {
+
+		for (int i = 0; i < joblist.length; i++) {
+
+			String jobCode = joblist[i][7];
+			ArrayList<String> matchedJobs = getSimilarJob(jobCode, 50);
+			// System.out.println(matchedJobs);
+			matchingTableMap.put(jobCode, matchedJobs);
+			
+			String jobName = joblist[i][8];
+			jobTableMap.put(jobCode, jobName);
+
+		}
+
+	}
+
+	// input: a Jobcode , output: a list of matched jobs
 	public ArrayList<String> getSimilarJob(String testID_str, int threshold) {
 
 		// size(100, 100);
@@ -75,17 +111,15 @@ public class MatchingTable {
 		int testID = Integer.parseInt(testID_str);
 
 		testID = getJobID(testID_str);
-		if(testID==0)
-			System.out.println("no job id in joblist");
-				
-				
+//		if (testID == 0)
+//			System.out.println("no job id in joblist");
 
 		String targetJobPosition = joblist[testID][6];
 		String searchJob = joblist[testID][8];
 		String searchJobID = joblist[testID][7];
 
-		System.out.print("JobID: " + searchJobID);
-		System.out.println("\tJobPosition: " + targetJobPosition);
+//		System.out.print("JobID: " + searchJobID);
+//		System.out.println("\tJobPosition: " + targetJobPosition);
 
 		/*
 		 * Reference for Closeness Between Target Job and Other Jobs: (Subject
@@ -276,5 +310,16 @@ public class MatchingTable {
 
 		return 0;
 	}
+
+	public HashMap<String, ArrayList<String>> getMatchingTableMap() {
+		return matchingTableMap;
+	}
+
+	public HashMap<String, String> getJobTableMap() {
+		return jobTableMap;
+	}
+
+
+	
 
 }

@@ -1,6 +1,7 @@
 package kr.ac.kaist.ks.jobmatching.application;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -12,6 +13,7 @@ import kr.ac.kaist.ks.jobmatching.domain.model.req.ReqRepository;
 import kr.ac.kaist.ks.jobmatching.domain.model.user.User;
 import kr.ac.kaist.ks.jobmatching.domain.model.user.UserRepository;
 import kr.ac.kaist.ks.jobmatching.infrastructure.repository.JDBCConnection;
+import kr.ac.kaist.ks.jobmatching.infrastructure.repository.MatchingTable;
 
 public class JobmatchingService {
 
@@ -20,11 +22,13 @@ public class JobmatchingService {
 	private ReqRepository reqRepository = new ReqRepository();
 	private UserRepository userRepository = new UserRepository();
 
-	public Set<Company> getMatchedCompanies(Req req)
+	private HashMap<String, String> MatchingTableMap;
+
+	public Set<Company> getMatchedCompanies(Req req, MatchingTable mt)
 			throws ClassNotFoundException {
 		Set<Company> company = new HashSet<Company>();
 		// company = companyRepository.getAllBy(sql);
-		company.addAll(companyRepository.getAllBy(sqlModifyService.apply(req)));
+		company.addAll(companyRepository.getAllBy(sqlModifyService.apply(req,mt)));
 
 		return company;
 	}
@@ -47,18 +51,24 @@ public class JobmatchingService {
 
 	public static void main(String[] args) throws ClassNotFoundException {
 
-		//start
+		// start
 		String userID = "E140800268";
 
 		Set<Company> company = new HashSet<Company>();
 
 		try {
+			
+			MatchingTable mt = new MatchingTable();
+
 			JobmatchingService service = new JobmatchingService();
 
+			
+			System.out.println("Job Recommendataion for user: "+userID);
 			User user = service.getUserInfo(userID);
 			Req req = service.getUserReq(user);
-			company = service.getMatchedCompanies(req);
+			company = service.getMatchedCompanies(req,mt);
 
+			System.out.println("Final Recommendation Resuts (Company) : ");
 			System.out.println(company.toString());
 
 			Iterator<Company> iter = company.iterator();
